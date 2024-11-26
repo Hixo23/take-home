@@ -18,6 +18,19 @@ export const Entrypoint = () => {
     setCards(listQuery.data?.filter((item) => item.isVisible) ?? []);
   }, [listQuery.data, listQuery.isLoading, setCards]);
 
+  useEffect(() => {
+    if (listQuery.data) {
+      const mergedCards = listQuery.data.map((newCard) => {
+        const existingCard = cards.find((card) => card.id === newCard.id);
+        return existingCard
+          ? { ...newCard, isVisible: existingCard.isVisible }
+          : { ...newCard, isVisible: false };
+      }).filter(card => !deletedCards.some(deletedCard => deletedCard.id === card.id));
+
+      setCards(mergedCards);
+    }
+  }, [listQuery.data, setCards, deletedCards]);
+
   if (listQuery.isLoading) {
     return <Spinner />;
   }
@@ -41,6 +54,12 @@ export const Entrypoint = () => {
             className="text-white text-sm transition-colors hover:bg-gray-800 disabled:bg-black/75 bg-black rounded px-3 py-1"
           >
             {isRevealed ? "Hide" : "Reveal"}
+          </button>
+          <button
+            onClick={() => listQuery.refetch()}
+            className="text-white text-sm transition-colors hover:bg-gray-800 disabled:bg-black/75 bg-black rounded px-3 py-1"
+          >
+            Refresh
           </button>
         </div>
         <div className="flex flex-col gap-y-3">

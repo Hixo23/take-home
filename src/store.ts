@@ -39,6 +39,7 @@ export const useStore = create<State & Actions>((set) => ({
       deletedCards: [...state.deletedCards, state.cards.find((card) => card.id === id)!],
       cards: state.cards.filter((card) => card.id !== id),
     }))
-  },
+  }
+
 }));
 
