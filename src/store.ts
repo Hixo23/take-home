@@ -8,8 +8,9 @@ type State = {
 
 type Actions = {
   setCards: (cards: ListItem[]) => void
-  toggleDeleteCard: (id: number) => void
   toggleHiddenCard: (id: number) => void
+  deleteCard: (id: number) => void
+  revertCard: (id: number) => void
 };
 
 
@@ -34,21 +35,24 @@ export const useStore = create<State & Actions>((set) => ({
       ),
     }));
   },
-  toggleDeleteCard: (id) => set((state) => {
-    const isDeleted = state.deletedCards.some((card) => card.id === id);
-    if (isDeleted) {
-      const restoredCard = state.deletedCards.find((card) => card.id === id)!;
-      return {
-        deletedCards: state.deletedCards.filter((card) => card.id !== id),
-        cards: [...state.cards, restoredCard]
-      };
-    } else {
-      const cardToDelete = state.cards.find((card) => card.id === id)!;
-      return {
-        deletedCards: [...state.deletedCards, { ...cardToDelete }],
-        cards: state.cards.filter((card) => card.id !== id)
-      };
-    }
-  })
+  deleteCard: (id) => {
+    set((state) => {
+      const card = state.cards.find((card) => card.id === id);
+      if (card) {
+        return {
+          cards: state.cards.filter((card) => card.id !== id),
+          deletedCards: [...state.deletedCards, card],
+        };
+      }
+      return state;
+    });
+  },
+  revertCard: (id) => {
+    // Implement this action
+    set((state) => {
+      console.log(id)
+      return state
+    })
+  }
 }));
 

@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { ListItem } from "../api/getListData";
-import { ExpandButton, ToggleButton } from "./Buttons";
+import { DeleteButton, ExpandButton } from "./Buttons";
 import { ChevronDownIcon, ChevronUpIcon } from "./icons";
 import { useStore } from "../store";
 
@@ -12,8 +12,8 @@ type CardProps = {
   isDeleted?: boolean;
 };
 
-export const Card: FC<CardProps> = ({ title, description, isVisible, id, isDeleted = false }) => {
-  const { toggleHiddenCard, toggleDeleteCard } = useStore()
+export const Card: FC<CardProps> = ({ title, description, isVisible, id, isDeleted }) => {
+  const { toggleHiddenCard, deleteCard } = useStore()
 
   return (
     <div className="border border-black px-2 py-1.5">
@@ -24,7 +24,7 @@ export const Card: FC<CardProps> = ({ title, description, isVisible, id, isDelet
             {isVisible ? <ChevronUpIcon /> : <ChevronDownIcon />}
           </ExpandButton>
           }
-          <ToggleButton isDeleted={isDeleted} onClick={() => !isDeleted && toggleDeleteCard(id)} />
+          {isDeleted ? null : <DeleteButton onClick={() => deleteCard(id)} />}
         </div>
       </div>
       {isDeleted ? null : <p className={`text-sm transition-all duration-150 ease-in-out ${isVisible ? 'max-h-96' : 'max-h-0 overflow-hidden'}`}>{description}</p>}
