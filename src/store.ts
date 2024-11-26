@@ -34,12 +34,21 @@ export const useStore = create<State & Actions>((set) => ({
       ),
     }));
   },
-  toggleDeleteCard(id) {
-    set((state) => ({
-      deletedCards: [...state.deletedCards, state.cards.find((card) => card.id === id)!],
-      cards: state.cards.filter((card) => card.id !== id),
-    }))
-  }
-
+  toggleDeleteCard: (id) => set((state) => {
+    const isDeleted = state.deletedCards.some((card) => card.id === id);
+    if (isDeleted) {
+      const restoredCard = state.deletedCards.find((card) => card.id === id)!;
+      return {
+        deletedCards: state.deletedCards.filter((card) => card.id !== id),
+        cards: [...state.cards, restoredCard]
+      };
+    } else {
+      const cardToDelete = state.cards.find((card) => card.id === id)!;
+      return {
+        deletedCards: [...state.deletedCards, { ...cardToDelete }],
+        cards: state.cards.filter((card) => card.id !== id)
+      };
+    }
+  })
 }));
 
